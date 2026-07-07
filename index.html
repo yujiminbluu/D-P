@@ -6,9 +6,6 @@
     
     <title>Monton Prompheng | Computer Engineer & Analyst</title>
     <meta name="description" content="Portfolio of Monton Prompheng. Bridging computer engineering, system architecture, and financial logic.">
-    <meta property="og:title" content="Monton Prompheng | Professional Portfolio">
-    <meta property="og:description" content="Computer Engineering student with expertise in systematic workflows, basic programming, and investment analytics.">
-    <meta property="og:type" content="website">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,23 +14,278 @@
     <style>
         :root {
             --bg-body: #f1f5f9;
-            --bg-surface: #ffffff;
+            --bg-surface: rgba(255, 255, 255, 0.85); /* ปรับให้โปร่งแสงเล็กน้อยเพื่อให้เห็นวิดีโอด้านหลัง */
             --text-primary: #0f172a;
             --text-secondary: #64748b;
             --accent-main: #2563eb;
             --accent-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
             --accent-light: #eff6ff;
-            --border-color: #e2e8f0;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+            --glitch-color-1: rgba(255, 0, 85, 0.6);
+            --glitch-color-2: rgba(0, 255, 255, 0.6);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden; /* ป้องกันการเลื่อนทะลุกรอบ */
+        }
+
+        /* -------------------------------------------
+           ส่วนการจัดการภาพและวิดีโอพื้นหลัง 
+           ------------------------------------------- */
+        .video-bg-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -2;
+            overflow: hidden;
             background-color: var(--bg-body);
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+        }
+
+        .bg-media {
+            width: 100%; height: 100%;
+            object-fit: cover; /* ทำให้ภาพ/วิดีโอเต็มจอโดยไม่เสียสัดส่วน */
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        /* แผ่นฟิลเตอร์ทับวิดีโอ เพื่อให้ตัวหนังสือบนเว็บยังอ่านง่าย ไม่ลายตา */
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(241, 245, 249, 0.7); 
+            backdrop-filter: blur(8px); /* เบลอพื้นหลังนิดๆ ให้ดูหรู */
+            z-index: -1;
+        }
+
+        /* -------------------------------------------
+           โครงสร้างแอป 
+           ------------------------------------------- */
+        .app-window {
+            background-color: var(--bg-surface);
+            backdrop-filter: blur(12px); /* Glassmorphism effect */
+            -webkit-backdrop-filter: blur(12px);
+            width: 100%; max-width: 1100px; height: 85vh; min-height: 650px;
+            border-radius: 20px; box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            display: flex; flex-direction: row; position: relative; z-index: 1;
+        }
+
+        .sidebar {
+            width: 320px; background-color: rgba(248, 250, 252, 0.7); display: flex; flex-direction: column;
+            border-right: 1px solid var(--border-color); padding: 40px 24px; position: relative;
+            border-top-left-radius: 20px; border-bottom-left-radius: 20px;
+        }
+
+        .profile-section { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 25px; z-index: 1; }
+        .avatar-placeholder {
+            width: 96px; height: 96px; background: var(--accent-gradient); color: white;
+            border-radius: 20px; display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
+            border: 3px solid white; margin-bottom: 15px; flex-shrink: 0;
+        }
+
+        .profile-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+        .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500; }
+
+        /* Social Links */
+        .social-links { display: flex; gap: 10px; justify-content: center; margin-top: 15px; margin-bottom: 25px; z-index: 1; }
+        .social-btn {
+            width: 38px; height: 38px; border-radius: 50%; background: white; border: 1px solid var(--border-color);
+            display: flex; justify-content: center; align-items: center; color: var(--text-secondary);
+            transition: all 0.2s ease; cursor: pointer; text-decoration: none; box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .social-btn:hover { background: var(--accent-light); color: var(--accent-main); border-color: var(--accent-main); transform: translateY(-2px); }
+        .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
+        .social-btn.stroke-icon svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;}
+
+        .nav-menu { display: flex; flex-direction: column; gap: 6px; z-index: 1; flex: 1;}
+        .nav-item {
+            padding: 12px 16px; text-align: left; border-radius: 10px; cursor: pointer;
+            font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 12px; background: transparent; border: none;
+        }
+        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; opacity: 0.7; }
+        .nav-item:hover { background-color: rgba(255,255,255,0.6); color: var(--text-primary); }
+        .nav-item.active { background-color: var(--accent-main); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .nav-item.active svg { opacity: 1; }
+
+        .main-content { flex: 1; padding: 50px 60px; overflow-y: auto; background-color: transparent; border-top-right-radius: 20px; border-bottom-right-radius: 20px;}
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Mobile Layout */
+        @media (max-width: 768px) {
+            body { padding: 0; }
+            .app-window { height: 100dvh; border-radius: 0; border: none; flex-direction: column; }
+            .sidebar { width: 100%; padding: 20px; border-right: none; border-bottom: 1px solid var(--border-color); border-radius: 0; z-index: 10;}
+            .profile-section { flex-direction: row; text-align: left; margin-bottom: 15px; gap: 15px; }
+            .avatar-placeholder { width: 56px; height: 56px; font-size: 1.5rem; border-radius: 14px; margin-bottom: 0;}
+            .social-links { display: none; } 
+            .nav-menu { flex-direction: row; overflow-x: auto; padding-bottom: 5px; gap: 8px; flex: none;}
+            .nav-item { padding: 10px 14px; white-space: nowrap; font-size: 0.9rem;}
+            .main-content { padding: 25px 20px; border-radius: 0;}
+        }
+
+        .tab-pane { display: none; animation: slideFade 0.3s ease forwards; }
+        .tab-pane.active { display: block; }
+        @keyframes slideFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-main); font-weight: 700; margin-bottom: 8px; display: block; }
+        h2.section-heading { font-size: 2rem; font-weight: 800; margin-bottom: 25px; color: var(--text-primary); letter-spacing: -0.5px; }
+        p.summary-text { line-height: 1.8; color: #475569; font-size: 1.05rem; margin-bottom: 20px; }
+
+        .info-card {
+            background: rgba(255,255,255,0.7); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-main);
+            border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
+        }
+        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); background: rgba(255,255,255,0.9); }
+        
+        /* -------------------------------------------
+           เอฟเฟกต์ Glitch / บัค เวลาคลิกหน้าจอ
+           ------------------------------------------- */
+        .glitch-anim {
+            animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+
+        @keyframes glitch-skew {
+            0% { transform: translate(0); filter: none; }
+            20% { transform: translate(-4px, 4px) skew(-3deg); filter: drop-shadow(4px 0px 0px var(--glitch-color-1)) drop-shadow(-4px 0px 0px var(--glitch-color-2)); }
+            40% { transform: translate(4px, -4px) skew(3deg); filter: none; }
+            60% { transform: translate(-2px, 2px) skew(-1deg); filter: drop-shadow(-4px 0px 0px var(--glitch-color-1)) drop-shadow(4px 0px 0px var(--glitch-color-2)); }
+            80% { transform: translate(2px, -2px) skew(1deg); filter: none; }
+            100% { transform: translate(0); filter: none; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 1. ส่วนตั้งค่าพื้นหลังวิดีโอและรูปภาพ -->
+    <div class="video-bg-container">
+        <!-- เปลี่ยน src ด้านล่างเป็นไฟล์รูปภาพของคุณ (แสดงผลกรณีที่วิดีโอไม่เล่น) -->
+        <img src="ใส่ชื่อไฟล์ภาพของคุณ.jpg" alt="Background Fallback" class="bg-media">
+        
+        <!-- เปลี่ยน src ด้านล่างเป็นไฟล์วิดีโอ MP4 ของคุณ -->
+        <video autoplay loop muted playsinline class="bg-media">
+            <source src="ใส่ชื่อไฟล์วิดีโอของคุณ.mp4" type="video/mp4">
+        </video>
+        
+        <div class="bg-overlay"></div>
+    </div>
+
+    <!-- 2. กรอบแอปพลิเคชันหลัก -->
+    <div class="app-window" id="mainAppWindow">
+        <aside class="sidebar">
+            <div class="profile-section">
+                <div class="avatar-placeholder">MP</div>
+                <div>
+                    <div class="profile-name">Monton Prompheng</div>
+                    <div class="profile-role">Computer Engineering</div>
+                </div>
+            </div>
+
+            <!-- 3. ข้อมูลติดต่อที่ฝังลิงก์จริงของคุณแล้ว -->
+            <div class="social-links">
+                <!-- อีเมล -->
+                <a href="mailto:dan.monthon@gmail.com" class="social-btn stroke-icon" title="Email: dan.monthon@gmail.com">
+                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <!-- เบอร์โทรศัพท์ -->
+                <a href="tel:0825511045" class="social-btn stroke-icon" title="Phone: 0825511045">
+                    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </a>
+                <!-- GitHub -->
+                <a href="https://github.com/yujiminbluu" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub: yujiminbluu">
+                    <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+            </div>
+
+            <div class="nav-menu">
+                <button class="nav-item active" onclick="openTab(event, 'profile')">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Overview
+                </button>
+                <button class="nav-item" onclick="openTab(event, 'education')">
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Education
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <section id="profile" class="tab-pane active">
+                <span class="section-tag">Introduction</span>
+                <h2 class="section-heading">Profile Overview</h2>
+                <p class="summary-text">
+                    A dedicated professional bridging the gap between systematic engineering and financial logic. Capable of understanding technical system workflows while applying structured, data-driven thinking to investment analysis and real-world problem-solving.
+                </p>
+                <p class="summary-text">
+                    Highly adaptable and focused on working effectively within a team environment, driven by shared goals, logical execution, and constructive communication.
+                </p>
+            </section>
+
+            <section id="education" class="tab-pane">
+                <span class="section-tag">Academic Background</span>
+                <h2 class="section-heading">Education</h2>
+                
+                <div class="info-card">
+                    <div style="font-weight: 700; font-size: 1.15rem;">Bachelor of Engineering in Computer Engineering</div>
+                    <div style="font-size: 0.9rem; color: var(--accent-main); margin: 6px 0 12px 0; font-weight: 600;">Nakhon Phanom University</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                        Focusing on system architecture, logical reasoning, and fundamental programming concepts. Applying analytical approaches to solve complex operational problems systematically.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 4. JavaScript ระบบเมนูและระบบ Glitch Effect -->
+    <script>
+        // ฟังก์ชันเปลี่ยนหน้า Tab
+        function openTab(event, tabId) {
+            // หยุดการกระทำถ้าไปกดโดนปุ่มแล้วเกิดเอฟเฟกต์ซ้อน
+            event.stopPropagation();
+            
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => pane.classList.remove('active'));
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // ฟังก์ชันตรวจจับการคลิก/แตะเพื่อสร้าง Glitch Effect
+        document.addEventListener('pointerdown', (e) => {
+            const appWindow = document.getElementById('mainAppWindow');
+            
+            // เช็กว่าไม่ได้กดโดนปุ่มหรือลิงก์ (ถ้าใช่ ไม่ต้องกระตุก)
+            const target = e.target;
+            if(target.closest('button') || target.closest('a')) return;
+
+            // รีเซ็ตแอนิเมชันให้สามารถกดซ้ำได้เรื่อยๆ
+            appWindow.classList.remove('glitch-anim');
+            void appWindow.offsetWidth; // บังคับให้เบราว์เซอร์ล้างค่าเดิม
+            appWindow.classList.add('glitch-anim');
+            
+            // ลบคลาสออกเมื่อแอนิเมชันเล่นจบ (0.3 วินาที)
+            setTimeout(() => {
+                appWindow.classList.remove('glitch-anim');
+            }, 300);
+        });
+    </script>
+</body>
+</html>
             background-size: 24px 24px;
             color: var(--text-primary);
             min-height: 100vh;
