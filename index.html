@@ -34,20 +34,17 @@
 
         body {
             background-color: var(--bg-body);
-            /* เพิ่มลาย Dot Pattern ให้พื้นหลังไม่ดูโล่ง */
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 24px 24px;
             color: var(--text-primary);
-            height: 100vh;
-            width: 100vw;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            padding: 20px;
             position: relative;
         }
 
-        /* เพิ่มแสง Glow ด้านหลังแอปให้ดูมีมิติ */
         body::before {
             content: '';
             position: absolute;
@@ -61,25 +58,33 @@
             pointer-events: none;
         }
 
+        /* โครงสร้างหลักสำหรับ PC (Desktop First) */
         .app-window {
             background-color: var(--bg-surface);
             width: 100%;
             max-width: 1050px;
+            height: 85vh;
+            min-height: 600px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.8);
             display: flex;
+            flex-direction: row;
             overflow: hidden;
-            transition: all 0.3s ease;
             position: relative;
             z-index: 1;
         }
 
         .sidebar {
+            width: 320px;
             background-color: #f8fafc;
             display: flex;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            border-right: 1px solid var(--border-color);
+            padding: 40px 24px;
             position: relative;
         }
 
-        /* แถบตกแต่งหัว Sidebar */
         .sidebar-header-bg {
             position: absolute;
             top: 0;
@@ -93,27 +98,37 @@
 
         .profile-section {
             display: flex;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 35px;
             position: relative;
             z-index: 1;
         }
 
         .avatar-placeholder {
+            width: 96px;
+            height: 96px;
             background: var(--accent-gradient);
             color: white;
-            border-radius: 20px; /* เปลี่ยนจากวงกลมเป็นขอบมนให้ดู Modern ขึ้น */
+            border-radius: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 2.5rem;
             font-weight: 800;
             box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
-            flex-shrink: 0;
             border: 3px solid white;
+            margin-bottom: 15px;
+            flex-shrink: 0;
         }
 
-        /* ป้าย Tag เล็กๆ ใต้โปรไฟล์ */
+        .profile-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+        .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500; }
+
         .badges-container {
             display: flex;
+            justify-content: center;
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 12px;
@@ -134,12 +149,15 @@
 
         .nav-menu {
             display: flex;
+            flex-direction: column;
             gap: 6px;
             position: relative;
             z-index: 1;
         }
 
         .nav-item {
+            padding: 14px 18px;
+            text-align: left;
             border-radius: 10px;
             cursor: pointer;
             font-size: 0.95rem;
@@ -177,12 +195,11 @@
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        .nav-item.active svg {
-            opacity: 1;
-        }
+        .nav-item.active svg { opacity: 1; }
 
         .main-content {
             flex: 1;
+            padding: 50px 60px;
             overflow-y: auto;
             position: relative;
             background-color: var(--bg-surface);
@@ -193,61 +210,24 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid var(--bg-surface); }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* -------------------------------------------
-           [1] โหมดแนวนอน (Landscape / PC) 
-           ------------------------------------------- */
-        @media (orientation: landscape) {
+        /* โครงสร้างสำหรับ Mobile & Tablet */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
             .app-window {
-                height: 85vh;
-                border-radius: 20px;
-                box-shadow: var(--shadow-lg);
-                border: 1px solid rgba(255, 255, 255, 0.8);
-                flex-direction: row;
-            }
-            .sidebar {
-                width: 320px;
-                flex-direction: column;
-                border-right: 1px solid var(--border-color);
-                padding: 40px 24px;
-            }
-            .profile-section {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                margin-bottom: 35px;
-            }
-            .avatar-placeholder {
-                width: 96px;
-                height: 96px;
-                font-size: 2.5rem;
-                margin-bottom: 15px;
-            }
-            .profile-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
-            .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500;}
-            .badges-container { justify-content: center; }
-            
-            .nav-menu { flex-direction: column; }
-            .nav-item { padding: 14px 18px; text-align: left; }
-            
-            .main-content { padding: 50px 60px; }
-        }
-
-        /* -------------------------------------------
-           [2] โหมดแนวตั้ง (Portrait / Mobile) 
-           ------------------------------------------- */
-        @media (orientation: portrait) {
-            .app-window {
-                height: 100vh;
-                width: 100vw;
+                height: 100dvh;
+                min-height: auto;
                 border-radius: 0;
+                border: none;
                 flex-direction: column;
             }
             .sidebar {
                 width: 100%;
                 flex-direction: column;
+                border-right: none;
                 border-bottom: 1px solid var(--border-color);
                 padding: 20px 20px 10px 20px;
-                z-index: 10;
                 box-shadow: var(--shadow-sm);
             }
             .sidebar-header-bg { height: 100%; opacity: 0.05; }
@@ -263,9 +243,11 @@
                 height: 64px;
                 font-size: 1.6rem;
                 border-radius: 16px;
+                margin-bottom: 0;
             }
-            .profile-name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px;}
-            .profile-role { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;}
+            .profile-name { font-size: 1.15rem; }
+            .profile-role { font-size: 0.85rem; }
+            .badges-container { justify-content: flex-start; margin-top: 8px; }
             
             .nav-menu { 
                 flex-direction: row; 
@@ -278,9 +260,7 @@
             .main-content { padding: 30px 24px; }
         }
 
-        /* -------------------------------------------
-           การตกแต่งเนื้อหาด้านใน
-           ------------------------------------------- */
+        /* การตกแต่งเนื้อหาด้านใน */
         .tab-pane {
             display: none;
             animation: slideFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -321,7 +301,7 @@
         .info-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-main); /* ขอบซ้ายให้การ์ดดูมีลูกเล่น */
+            border-left: 4px solid var(--accent-main);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
@@ -341,7 +321,6 @@
         .progress-bg { width: 100%; height: 8px; background-color: #e2e8f0; border-radius: 10px; overflow: hidden; }
         .progress-bar { height: 100%; background: var(--accent-gradient); border-radius: 10px; position: relative; }
         
-        /* ใส่แสงวิบวับในหลอดพลัง */
         .progress-bar::after {
             content: '';
             position: absolute;
@@ -368,26 +347,26 @@
                     <div class="profile-role">Computer Engineering & Finance</div>
                     
                     <div class="badges-container">
-                        <div class="badge">📍 Nakhon Phanom</div>
-                        <div class="badge">🟢 Open to Work</div>
+                        <div class="badge">Nakhon Phanom</div>
+                        <div class="badge">Open to Work</div>
                     </div>
                 </div>
             </div>
 
             <div class="nav-menu">
-                <button class="nav-item active" onclick="openTab('profile')">
+                <button class="nav-item active" onclick="openTab(event, 'profile')">
                     <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     Overview
                 </button>
-                <button class="nav-item" onclick="openTab('education')">
+                <button class="nav-item" onclick="openTab(event, 'education')">
                     <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                     Education
                 </button>
-                <button class="nav-item" onclick="openTab('skills')">
+                <button class="nav-item" onclick="openTab(event, 'skills')">
                     <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
                     Hard Skills
                 </button>
-                <button class="nav-item" onclick="openTab('teamwork')">
+                <button class="nav-item" onclick="openTab(event, 'teamwork')">
                     <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                     Soft Skills
                 </button>
@@ -476,7 +455,7 @@
     </div>
 
     <script>
-        function openTab(tabId) {
+        function openTab(event, tabId) {
             const panes = document.querySelectorAll('.tab-pane');
             panes.forEach(pane => pane.classList.remove('active'));
 
