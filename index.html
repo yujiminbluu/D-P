@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monton Prompheng | Portfolio</title>
+    <title>Monton Prompheng | Curriculum Vitae</title>
     <style>
-        /* CSS Variables สำหรับธีม Dark Mode & Digital Accent */
+        /* CSS ธีม Light Mode & Minimalist */
         :root {
-            --bg-base: #050505;
-            --surface-color: rgba(20, 20, 25, 0.7);
-            --text-primary: #f0f0f0;
-            --text-secondary: #888890;
-            --accent-glow: #00f0ff; /* สีฟ้า Neon Digital */
-            --accent-purple: #7000ff;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --accent-color: #2563eb;
+            --border-light: #e5e7eb;
         }
 
         * {
@@ -22,18 +22,225 @@
         }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
         }
 
+        .cv-container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding: 50px;
+            overflow: hidden;
+        }
+
+        /* Header Section */
+        .header {
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 30px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin-bottom: 5px;
+        }
+
+        .header h2 {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 20px;
+            background-color: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        /* Experience / Education Blocks */
+        .timeline-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .timeline-item:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+            border-color: #d1d5db;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .timeline-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .skill-card {
+            background-color: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent-color);
+            background-color: #eff6ff;
+        }
+
+        .skill-category {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .skill-list {
+            list-style: none;
+        }
+
+        .skill-list li {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .skill-list li::before {
+            content: '•';
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .cv-container {
+                padding: 30px 20px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cv-container">
+        
+        <!-- Header -->
+        <div class="header">
+            <h1>Monton Prompheng (Dan)</h1>
+            <h2>Computer Engineering Student with Interdisciplinary Background</h2>
+        </div>
+
+        <!-- Professional Profile -->
+        <h3 class="section-title">Professional Summary</h3>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">
+            A dedicated professional combining systematic engineering principles with a strong foundation in financial logic and accounting. Capable of understanding basic technical code while applying structured thinking to investment analysis and real-world problem-solving. Strong advocate for collaborative environments and goal-oriented teamwork.
+        </p>
+
+        <!-- Education -->
+        <h3 class="section-title">Education Background</h3>
+        
+        <div class="timeline-item">
+            <div class="timeline-title">Bachelor of Engineering in Computer Engineering</div>
+            <div class="timeline-subtitle">Nakhon Phanom University</div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Focusing on system architecture, logical reasoning, and programming fundamentals. Utilizing analytical skills to approach complex engineering problems systematically.
+            </p>
+        </div>
+
+        <div class="timeline-item">
+            <div class="timeline-title">Undergraduate Studies in Accounting (2 Years)</div>
+            <div class="timeline-subtitle">Mahasarakham University</div>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+                Developed a strong foundation in financial principles, meticulous record-keeping, and systematic data management.
+            </p>
+        </div>
+
+        <!-- Core Competencies (แบ่งหมวดหมู่ตามที่คุณระบุ) -->
+        <h3 class="section-title">Core Competencies</h3>
+        <div class="skills-grid">
+            
+            <div class="skill-card">
+                <div class="skill-category">Technical & Systems</div>
+                <ul class="skill-list">
+                    <li>Systematic Working</li>
+                    <li>Basic Programming / Coding</li>
+                    <li>Logical Workflow Design</li>
+                </ul>
+            </div>
+
+            <div class="skill-card">
+                <div class="skill-category">Finance & Analytics</div>
+                <ul class="skill-list">
+                    <li>Accounting Principles</li>
+                    <li>Investment Analysis (Gold Spot)</li>
+                    <li>Margin & Risk Calculation</li>
+                </ul>
+            </div>
+
+            <div class="skill-card">
+                <div class="skill-category">Soft Skills & Teamwork</div>
+                <ul class="skill-list">
+                    <li>Constructive Communication</li>
+                    <li>Adaptability & Flexibility</li>
+                    <li>Shared Goal Responsibility</li>
+                    <li>Basic English Communication</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
         /* เอฟเฟกต์แสงวิ่งตามเคอร์เซอร์เมาส์ */
         .cursor-glow {
             position: fixed;
