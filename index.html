@@ -3,99 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Monton Prompheng | Professional GUI</title>
+    <title>Monton Prompheng | Professional Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --bg-body: #eef2f6;
+            --bg-body: #f1f5f9;
             --bg-surface: #ffffff;
-            --text-primary: #1e293b;
+            --text-primary: #0f172a;
             --text-secondary: #64748b;
-            --accent-main: #3b82f6;
+            --accent-main: #2563eb;
+            --accent-gradient: linear-gradient(135deg, #2563eb, #3b82f6);
             --accent-light: #eff6ff;
             --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: transparent; /* เอาแสงกระพริบตอนกดในมือถือออก */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-body);
+            /* เพิ่มลาย Dot Pattern ให้พื้นหลังไม่ดูโล่ง */
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
             color: var(--text-primary);
             height: 100vh;
             width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* ป้องกันการเลื่อนหน้าเว็บทั้งหน้า */
+            overflow: hidden;
+            position: relative;
         }
 
-        /* โครงสร้างแอปพลิเคชัน */
+        /* เพิ่มแสง Glow ด้านหลังแอปให้ดูมีมิติ */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .app-window {
             background-color: var(--bg-surface);
             width: 100%;
-            max-width: 1000px;
+            max-width: 1050px;
             display: flex;
             overflow: hidden;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .sidebar {
             background-color: #f8fafc;
             display: flex;
             transition: all 0.3s ease;
+            position: relative;
+        }
+
+        /* แถบตกแต่งหัว Sidebar */
+        .sidebar-header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--accent-gradient);
+            opacity: 0.1;
+            z-index: 0;
         }
 
         .profile-section {
             display: flex;
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .avatar-placeholder {
-            background: linear-gradient(135deg, var(--accent-main), #60a5fa);
+            background: var(--accent-gradient);
             color: white;
-            border-radius: 50%;
+            border-radius: 20px; /* เปลี่ยนจากวงกลมเป็นขอบมนให้ดู Modern ขึ้น */
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: bold;
-            box-shadow: var(--shadow-md);
+            font-weight: 800;
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
             flex-shrink: 0;
+            border: 3px solid white;
+        }
+
+        /* ป้าย Tag เล็กๆ ใต้โปรไฟล์ */
+        .badges-container {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .badge {
+            background: var(--accent-light);
+            color: var(--accent-main);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid rgba(37, 99, 235, 0.1);
         }
 
         .nav-menu {
             display: flex;
-            gap: 8px;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
         }
 
         .nav-item {
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-secondary);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
+            gap: 12px;
             background: transparent;
             border: none;
             white-space: nowrap;
         }
 
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
         .nav-item:hover {
-            background-color: var(--border-color);
+            background-color: #f1f5f9;
             color: var(--text-primary);
         }
 
         .nav-item.active {
-            background-color: var(--accent-light);
-            color: var(--accent-main);
+            background-color: var(--accent-main);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        .nav-item.active svg {
+            opacity: 1;
         }
 
         .main-content {
@@ -105,77 +188,69 @@
             background-color: var(--bg-surface);
         }
 
-        /* ซ่อน Scrollbar แต่ยังเลื่อนได้ (เพื่อความสวยงามแบบแอป) */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid var(--bg-surface); }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
         /* -------------------------------------------
-           [1] โหมดแนวนอน (Landscape / PC Desktop) 
+           [1] โหมดแนวนอน (Landscape / PC) 
            ------------------------------------------- */
         @media (orientation: landscape) {
             .app-window {
                 height: 85vh;
-                border-radius: 16px;
+                border-radius: 20px;
                 box-shadow: var(--shadow-lg);
-                border: 1px solid var(--border-color);
-                flex-direction: row; /* เรียงซ้าย-ขวา */
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                flex-direction: row;
             }
             .sidebar {
-                width: 280px;
-                flex-direction: column; /* เมนูเรียงบนลงล่าง */
+                width: 320px;
+                flex-direction: column;
                 border-right: 1px solid var(--border-color);
-                padding: 40px 20px;
+                padding: 40px 24px;
             }
             .profile-section {
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                margin-bottom: 40px;
+                margin-bottom: 35px;
             }
             .avatar-placeholder {
-                width: 90px;
-                height: 90px;
+                width: 96px;
+                height: 96px;
                 font-size: 2.5rem;
                 margin-bottom: 15px;
             }
-            .profile-name { font-size: 1.2rem; font-weight: 700; }
-            .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 5px; }
+            .profile-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+            .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500;}
+            .badges-container { justify-content: center; }
             
             .nav-menu { flex-direction: column; }
-            .nav-item { padding: 12px 16px; text-align: left; }
-            .nav-item.active { box-shadow: inset 4px 0 0 var(--accent-main); }
+            .nav-item { padding: 14px 18px; text-align: left; }
             
-            .main-content { padding: 40px 50px; }
+            .main-content { padding: 50px 60px; }
         }
 
         /* -------------------------------------------
-           [2] โหมดแนวตั้ง (Portrait / Mobile Phone) 
+           [2] โหมดแนวตั้ง (Portrait / Mobile) 
            ------------------------------------------- */
         @media (orientation: portrait) {
             .app-window {
                 height: 100vh;
                 width: 100vw;
-                border-radius: 0; /* เอาขอบโค้งออกให้เต็มจอ */
-                flex-direction: column; /* เรียงบนลงล่าง */
+                border-radius: 0;
+                flex-direction: column;
             }
             .sidebar {
                 width: 100%;
                 flex-direction: column;
                 border-bottom: 1px solid var(--border-color);
                 padding: 20px 20px 10px 20px;
-                background-color: var(--bg-surface);
-                box-shadow: 0 2px 10px rgba(0,0,0,0.02);
                 z-index: 10;
+                box-shadow: var(--shadow-sm);
             }
+            .sidebar-header-bg { height: 100%; opacity: 0.05; }
             .profile-section {
                 flex-direction: row;
                 align-items: center;
@@ -184,82 +259,145 @@
                 gap: 15px;
             }
             .avatar-placeholder {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
+                width: 64px;
+                height: 64px;
+                font-size: 1.6rem;
+                border-radius: 16px;
             }
-            .profile-name { font-size: 1.1rem; font-weight: 700; }
-            .profile-role { font-size: 0.85rem; color: var(--text-secondary); }
+            .profile-name { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.5px;}
+            .profile-role { font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;}
             
             .nav-menu { 
                 flex-direction: row; 
-                overflow-x: auto; /* ทำให้เอานิ้วปัดซ้ายขวาได้ */
-                padding-bottom: 5px;
+                overflow-x: auto;
+                padding-bottom: 8px;
+                gap: 8px;
             }
             .nav-item { padding: 10px 16px; }
-            .nav-item.active { box-shadow: inset 0 -3px 0 var(--accent-main); }
             
-            .main-content { padding: 25px 20px; }
+            .main-content { padding: 30px 24px; }
         }
 
         /* -------------------------------------------
-           ส่วนการตกแต่งเนื้อหาด้านใน (ไม่ขึ้นกับแนว)
+           การตกแต่งเนื้อหาด้านใน
            ------------------------------------------- */
         .tab-pane {
             display: none;
-            animation: fadeIn 0.3s ease forwards;
+            animation: slideFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .tab-pane.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideFade {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        h2.section-heading { font-size: 1.6rem; font-weight: 700; margin-bottom: 20px; color: var(--text-primary); }
-        p.summary-text { line-height: 1.7; color: var(--text-secondary); font-size: 1rem; margin-bottom: 20px; }
+        .section-tag {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-main);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        h2.section-heading { 
+            font-size: 2rem; 
+            font-weight: 800; 
+            margin-bottom: 25px; 
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+        
+        p.summary-text { 
+            line-height: 1.8; 
+            color: #475569; 
+            font-size: 1.05rem; 
+            margin-bottom: 20px; 
+            font-weight: 400;
+        }
 
         .info-card {
-            background: #fff;
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-main); /* ขอบซ้ายให้การ์ดดูมีลูกเล่น */
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            transition: transform 0.2s;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #cbd5e1; }
-        .card-title { font-weight: 600; font-size: 1.05rem; }
-        .card-subtitle { font-size: 0.85rem; color: var(--accent-main); margin: 4px 0 10px 0; font-weight: 500; }
+        .info-card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-md); 
+            border-color: #cbd5e1; 
+        }
+        .card-title { font-weight: 700; font-size: 1.15rem; color: var(--text-primary); }
+        .card-subtitle { font-size: 0.9rem; color: var(--accent-main); margin: 6px 0 12px 0; font-weight: 600; }
         
-        .skill-group { margin-bottom: 15px; }
-        .skill-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; }
-        .progress-bg { width: 100%; height: 6px; background-color: var(--border-color); border-radius: 4px; overflow: hidden; }
-        .progress-bar { height: 100%; background-color: var(--accent-main); border-radius: 4px; }
+        .skill-group { margin-bottom: 18px; }
+        .skill-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);}
+        .progress-bg { width: 100%; height: 8px; background-color: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .progress-bar { height: 100%; background: var(--accent-gradient); border-radius: 10px; position: relative; }
+        
+        /* ใส่แสงวิบวับในหลอดพลัง */
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
     </style>
 </head>
 <body>
 
     <div class="app-window">
         <aside class="sidebar">
+            <div class="sidebar-header-bg"></div>
             <div class="profile-section">
-                <div class="avatar-placeholder">M</div>
+                <div class="avatar-placeholder">MP</div>
                 <div>
                     <div class="profile-name">Monton Prompheng</div>
-                    <div class="profile-role">Computer Engineering / Finance</div>
+                    <div class="profile-role">Computer Engineering & Finance</div>
+                    
+                    <div class="badges-container">
+                        <div class="badge">📍 Nakhon Phanom</div>
+                        <div class="badge">🟢 Open to Work</div>
+                    </div>
                 </div>
             </div>
 
             <div class="nav-menu">
-                <button class="nav-item active" onclick="openTab('profile')">Profile Overview</button>
-                <button class="nav-item" onclick="openTab('education')">Education</button>
-                <button class="nav-item" onclick="openTab('skills')">Professional Skills</button>
-                <button class="nav-item" onclick="openTab('teamwork')">Teamwork & Soft Skills</button>
+                <button class="nav-item active" onclick="openTab('profile')">
+                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Overview
+                </button>
+                <button class="nav-item" onclick="openTab('education')">
+                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Education
+                </button>
+                <button class="nav-item" onclick="openTab('skills')">
+                    <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    Hard Skills
+                </button>
+                <button class="nav-item" onclick="openTab('teamwork')">
+                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    Soft Skills
+                </button>
             </div>
         </aside>
 
         <main class="main-content">
             
             <section id="profile" class="tab-pane active">
+                <span class="section-tag">Introduction</span>
                 <h2 class="section-heading">Profile Overview</h2>
                 <p class="summary-text">
                     A dedicated professional bridging the gap between systematic engineering and financial logic. Capable of understanding technical programming workflows while applying structured, data-driven thinking to real-world problem-solving. 
@@ -270,30 +408,32 @@
             </section>
 
             <section id="education" class="tab-pane">
+                <span class="section-tag">Academic Background</span>
                 <h2 class="section-heading">Education</h2>
                 
                 <div class="info-card">
                     <div class="card-title">Bachelor of Engineering in Computer Engineering</div>
                     <div class="card-subtitle">Nakhon Phanom University</div>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
                         Focusing on system architecture, logical reasoning, and fundamental programming concepts. Applying analytical approaches to solve complex operational problems systematically.
                     </p>
                 </div>
 
-                <div class="info-card">
+                <div class="info-card" style="border-left-color: #94a3b8;">
                     <div class="card-title">Undergraduate Studies in Accounting (2 Years)</div>
-                    <div class="card-subtitle">Mahasarakham University</div>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6;">
+                    <div class="card-subtitle" style="color: #64748b;">Mahasarakham University</div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
                         Built a solid foundation in accounting principles, structural financial data management, and systematic record-keeping.
                     </p>
                 </div>
             </section>
 
             <section id="skills" class="tab-pane">
+                <span class="section-tag">Core Competencies</span>
                 <h2 class="section-heading">Hard Skills</h2>
                 
-                <div class="info-card">
-                    <h3 style="margin-bottom: 15px; font-size: 0.95rem;">Technical & Systems</h3>
+                <div class="info-card" style="border-left-color: transparent;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-primary);">Technical & Systems</h3>
                     <div class="skill-group">
                         <div class="skill-header"><span>Systematic Workflow Design</span> <span>85%</span></div>
                         <div class="progress-bg"><div class="progress-bar" style="width: 85%;"></div></div>
@@ -304,8 +444,8 @@
                     </div>
                 </div>
 
-                <div class="info-card">
-                    <h3 style="margin-bottom: 15px; font-size: 0.95rem;">Finance & Analytics</h3>
+                <div class="info-card" style="border-left-color: transparent;">
+                    <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-primary);">Finance & Analytics</h3>
                     <div class="skill-group">
                         <div class="skill-header"><span>Accounting & Bookkeeping</span> <span>80%</span></div>
                         <div class="progress-bg"><div class="progress-bar" style="width: 80%;"></div></div>
@@ -318,11 +458,12 @@
             </section>
 
             <section id="teamwork" class="tab-pane">
-                <h2 class="section-heading">Teamwork</h2>
+                <span class="section-tag">Collaboration</span>
+                <h2 class="section-heading">Teamwork & Soft Skills</h2>
                 
                 <div class="info-card">
                     <div class="card-title">Collaborative Excellence</div>
-                    <ul style="margin-top: 15px; padding-left: 20px; color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem;">
+                    <ul style="margin-top: 15px; padding-left: 20px; color: var(--text-secondary); line-height: 2; font-size: 1rem;">
                         <li><strong>Shared Goal Responsibility:</strong> Committed to achieving team objectives over individual recognition.</li>
                         <li><strong>Constructive Communication:</strong> Clear, open, and respectful dialogue to resolve issues logically.</li>
                         <li><strong>Adaptability:</strong> Flexible in dynamic environments, able to pivot between technical tasks and analytical roles.</li>
