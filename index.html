@@ -22,32 +22,25 @@
             --border-color: rgba(226, 232, 240, 0.9);
             --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
             --shadow-lg: 0 25px 50px -12px rgba(0,0,0,0.15);
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); /* แอนิเมชันระดับสากล นุ่มและหนึบ */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            color: var(--text-primary);
-            background-color: var(--bg-body);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden; /* ล็อกกรอบนอกสุด */
+            color: var(--text-primary); background-color: var(--bg-body);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center;
+            position: relative; overflow: hidden; 
         }
 
-        /* -------------------------------------------
-           พื้นหลังมิติใหม่ (ไม่ให้ดูโล่ง)
-           ------------------------------------------- */
+        /* พื้นหลังมิติใหม่ */
         .digital-grid-overlay {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
             background-size: 30px 30px; animation: gridPan 30s linear infinite; z-index: -3;
         }
 
-        /* ลูกแก้วเรืองแสง (Glowing Orbs) สร้างมิติไม่ให้พื้นหลังแบน */
         .glow-orb-1, .glow-orb-2 {
             position: absolute; border-radius: 50%; filter: blur(80px); z-index: -2; opacity: 0.5;
             animation: floatOrb 10s ease-in-out infinite alternate;
@@ -58,85 +51,85 @@
         @keyframes gridPan { 0% { transform: translateY(0); } 100% { transform: translateY(30px); } }
         @keyframes floatOrb { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.1) translate(5%, 5%); } }
 
-        /* -------------------------------------------
-           โครงสร้างสัดส่วน PC (กว้างเต็มตาพอดีขอบ)
-           ------------------------------------------- */
+        /* โครงสร้างสัดส่วน PC (CSS Grid) */
         .app-window {
-            background-color: var(--bg-surface);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            width: 94vw; max-width: 1400px; /* ใช้พื้นที่จอถึง 94% ไม่ปล่อยให้ว่างเกินไป */
-            height: 90vh; max-height: 900px; /* ใช้พื้นที่ความสูง 90% ของจอ */
-            border-radius: 24px; box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 1);
-            display: flex; flex-direction: row; position: relative; z-index: 1; overflow: hidden;
+            background-color: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            width: 94vw; max-width: 1400px; height: 90vh; max-height: 900px;
+            border-radius: 24px; box-shadow: var(--shadow-lg); border: 1px solid rgba(255, 255, 255, 1);
+            display: grid; grid-template-columns: 340px 1fr; grid-template-rows: auto 1fr;
+            overflow: hidden; position: relative; z-index: 1;
         }
 
-        .sidebar {
-            width: 340px; background-color: rgba(248, 250, 252, 0.8); display: flex; flex-direction: column;
-            border-right: 1px solid var(--border-color); padding: 50px 30px; position: relative; z-index: 10;
+        .sidebar-profile {
+            grid-column: 1; grid-row: 1; background-color: rgba(248, 250, 252, 0.8); border-right: 1px solid var(--border-color);
+            padding: 50px 30px 10px 30px; display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 10;
         }
 
-        .profile-section { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 25px; }
+        /* 👑 [Premium Effect 1] แอนิเมชันรูปโปรไฟล์ */
         .avatar-placeholder {
-            width: 100px; height: 100px; background: var(--accent-gradient); color: white;
-            border-radius: 24px; display: flex; justify-content: center; align-items: center;
-            font-size: 2.5rem; font-weight: 800; box-shadow: 0 12px 20px -5px rgba(37, 99, 235, 0.3);
-            border: 4px solid white; margin-bottom: 16px; flex-shrink: 0;
+            width: 105px; height: 105px; background: var(--accent-gradient); color: white;
+            border-radius: 28px; display: flex; justify-content: center; align-items: center;
+            font-size: 2.5rem; font-weight: 800; box-shadow: 0 12px 25px -5px rgba(37, 99, 235, 0.4);
+            border: 4px solid white; margin-bottom: 18px; flex-shrink: 0;
+            transition: all 0.5s var(--ease-spring); cursor: default;
+            position: relative;
+        }
+        .avatar-placeholder:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 20px 35px -5px rgba(37, 99, 235, 0.5);
+            border-radius: 20px; /* เปลี่ยนความโค้งนิดนึงให้น่าสนใจ */
         }
 
-        .profile-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
-        .profile-role { font-size: 0.95rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+        .profile-name { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
+        .profile-role { font-size: 0.95rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; margin-bottom: 15px;}
+        
+        /* 👑 [Premium Effect 2] จุดสถานะสีเขียวกระพริบ (Live Status) */
+        .live-status {
+            display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #10b981;
+            background: rgba(16, 185, 129, 0.1); padding: 6px 14px; border-radius: 20px; margin-bottom: 25px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .status-dot {
+            width: 8px; height: 8px; background-color: #10b981; border-radius: 50%;
+            box-shadow: 0 0 10px #10b981; animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-        .social-links { display: flex; gap: 12px; justify-content: center; margin-bottom: 35px; }
+        .social-links { display: flex; gap: 12px; justify-content: center; }
         .social-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: white; border: 1px solid var(--border-color);
+            width: 42px; height: 42px; border-radius: 50%; background: white; border: 1px solid var(--border-color);
             display: flex; justify-content: center; align-items: center; color: var(--text-secondary);
-            transition: all 0.3s var(--ease-out-expo); text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.4s var(--ease-spring); text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
-        .social-btn:hover { background: var(--accent-light); color: var(--accent-main); border-color: var(--accent-main); transform: translateY(-3px); box-shadow: 0 6px 12px rgba(37, 99, 235, 0.15);}
+        .social-btn:hover { background: var(--accent-light); color: var(--accent-main); border-color: var(--accent-main); transform: translateY(-5px); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);}
         .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
         .social-btn.stroke-icon svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;}
 
-        /* -------------------------------------------
-           [NEW] ระบบเมนูสไลด์ (Sliding Indicator)
-           ------------------------------------------- */
+        /* โซนเมนู */
         .nav-menu { 
-            position: relative; /* สำคัญมากเพื่อให้ตัว Indicator อิงตำแหน่งจากตรงนี้ */
-            display: flex; flex-direction: column; gap: 8px; flex: 1; 
+            grid-column: 1; grid-row: 2; background-color: rgba(248, 250, 252, 0.8); border-right: 1px solid var(--border-color);
+            padding: 20px 30px 40px 30px; display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 10;
         }
 
-        /* ตัวก้อนสีฟ้าที่จะเลื่อนไปมา */
         .nav-indicator {
-            position: absolute;
-            top: 0; left: 0;
-            background: var(--accent-main);
-            border-radius: 12px;
-            transition: all 0.4s var(--ease-out-expo);
-            z-index: 0;
-            pointer-events: none; /* ป้องกันการคลิกโดนตัวมันเอง */
-            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+            position: absolute; top: 0; left: 0; background: var(--accent-main); border-radius: 12px;
+            transition: transform 0.5s var(--ease-out-expo), width 0.5s var(--ease-out-expo), height 0.5s var(--ease-out-expo);
+            z-index: 0; pointer-events: none; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
         }
 
         .nav-item {
-            position: relative; z-index: 1; /* ให้อยู่เหนือ Indicator */
-            padding: 14px 18px; text-align: left; border-radius: 12px; cursor: pointer;
-            font-size: 1rem; font-weight: 600; color: var(--text-secondary); 
-            transition: color 0.3s ease;
+            position: relative; z-index: 1; padding: 14px 18px; text-align: left; border-radius: 12px; cursor: pointer;
+            font-size: 1rem; font-weight: 600; color: var(--text-secondary); transition: color 0.3s ease;
             display: flex; align-items: center; gap: 14px; background: transparent; border: none; width: 100%;
         }
         .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; opacity: 0.7; transition: opacity 0.3s ease;}
-        
         .nav-item:hover { color: var(--text-primary); }
-        
-        /* เมื่อปุ่มนั้น active จะเปลี่ยนแค่สีตัวอักษรเป็นสีขาว (เพราะก้อนสีฟ้าเลื่อนมารองรับด้านหลังแล้ว) */
         .nav-item.active { color: white; }
         .nav-item.active svg { opacity: 1; stroke: white; }
 
-        /* -------------------------------------------
-           ส่วนเนื้อหา
-           ------------------------------------------- */
+        /* โซนเนื้อหา */
         .main-content { 
-            flex: 1; padding: 60px 80px; overflow-y: auto; background-color: transparent; 
+            grid-column: 2; grid-row: 1 / span 2; padding: 60px 80px; overflow-y: auto; background-color: transparent; 
             scroll-behavior: smooth; position: relative;
         }
 
@@ -144,69 +137,97 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid transparent; background-clip: padding-box;}
 
-        /* โครงสร้าง Mobile & Tablet แบบแนบสนิท */
+        /* โครงสร้าง Mobile */
         @media (max-width: 900px) {
-            body { align-items: flex-start; padding: 0; overflow-y: auto; }
+            body { padding: 0; overflow-y: hidden; }
             .app-window { 
-                width: 100%; max-width: none; height: auto; min-height: 100dvh; 
-                border-radius: 0; border: none; flex-direction: column; overflow: visible;
-                background-color: var(--bg-body); box-shadow: none; backdrop-filter: none;
+                display: flex; flex-direction: column; width: 100vw; height: 100vh; height: 100dvh; 
+                max-width: none; max-height: none; border-radius: 0; border: none; background-color: var(--bg-body); box-shadow: none; backdrop-filter: none;
+                overflow-y: auto; overflow-x: hidden;
             }
-            .sidebar { 
-                width: 100%; padding: 40px 20px 0px 20px; background-color: transparent; border-right: none; 
-            }
-            .profile-section { flex-direction: column; text-align: center; margin-bottom: 20px; }
-            .avatar-placeholder { width: 80px; height: 80px; font-size: 2rem; }
+            .sidebar-profile { padding: 40px 20px 10px 20px; background-color: transparent; border-right: none; }
+            .avatar-placeholder { width: 80px; height: 80px; font-size: 2rem; margin-bottom: 12px; border-radius: 20px;}
+            .live-status { margin-bottom: 15px; }
             
-            /* Sticky Navigation สำหรับมือถือ */
             .nav-menu { 
-                flex-direction: row; overflow-x: auto; padding: 10px 20px; gap: 0; flex: none;
-                position: sticky; top: 0; z-index: 100;
-                background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(12px);
-                border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-md);
+                flex-direction: row; overflow-x: auto; padding: 10px 15px; gap: 4px; position: sticky; top: 0; z-index: 100;
+                background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(12px); border-right: none; border-bottom: 1px solid var(--border-color);
             }
-            .nav-menu::-webkit-scrollbar { display: none; }
+            .nav-menu::-webkit-scrollbar { display: none; } 
+            .nav-item { padding: 10px 16px; justify-content: center; white-space: nowrap; font-size: 0.95rem; border-radius: 12px; width: auto; gap: 8px; }
             
-            .nav-item { 
-                padding: 12px 20px; justify-content: center; white-space: nowrap; font-size: 0.95rem; border-radius: 12px;
+            .main-content { 
+                padding: 30px 15px 60px 15px; background-color: var(--bg-surface); min-height: 75vh; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--shadow-md);
             }
-            /* ปรับให้ Indicator เลื่อนแนวนอนบนมือถือ */
-            .nav-indicator { height: 100%; top: 0; left: 0; }
-            
-            .main-content { padding: 30px 20px 60px 20px; background-color: var(--bg-surface); min-height: 70vh; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--shadow-md);}
+            .info-card, .project-card { padding: 20px; } 
+            h2.section-heading { font-size: 1.8rem; margin-bottom: 20px; }
         }
 
         /* -------------------------------------------
-           การตกแต่งภายในแบบมืออาชีพ
+           การตกแต่งภายใน & แอนิเมชันระดับพรีเมียม
            ------------------------------------------- */
-        .tab-pane { 
-            display: none; 
-            /* แอนิเมชันแบบสไลด์ขึ้นและเฟดอิน (Physical motion) */
-            animation: slideUp 0.5s var(--ease-out-expo) forwards; 
+        
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
+        
+        /* 👑 [Premium Effect 3] Staggered Reveal (ไล่ลำดับการปรากฏ) */
+        .tab-pane.active > * {
+            animation: slideUpFade 0.6s var(--ease-out-expo) forwards;
             opacity: 0; transform: translateY(20px);
         }
-        .tab-pane.active { display: block; }
-        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        /* กำหนดเวลาดีเลย์ให้โผล่มาทีละบรรทัด */
+        .tab-pane.active > *:nth-child(1) { animation-delay: 0.05s; }
+        .tab-pane.active > *:nth-child(2) { animation-delay: 0.1s; }
+        .tab-pane.active > *:nth-child(3) { animation-delay: 0.15s; }
+        .tab-pane.active > *:nth-child(4) { animation-delay: 0.2s; }
+        .tab-pane.active > *:nth-child(5) { animation-delay: 0.25s; }
 
-        .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-main); font-weight: 800; margin-bottom: 12px; display: block; }
+        @keyframes slideUpFade { 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* ลูกเล่นตัวอักษรนำหน้าหัวข้อ */
+        .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-main); font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .section-tag::before { content: '✦'; color: var(--accent-main); font-size: 1rem; animation: spinStar 4s linear infinite; }
+        @keyframes spinStar { 100% { transform: rotate(360deg); } }
+        
         h2.section-heading { font-size: 2.2rem; font-weight: 800; margin-bottom: 30px; color: var(--text-primary); letter-spacing: -1px; line-height: 1.2;}
         p.summary-text { line-height: 1.8; color: #475569; font-size: 1.1rem; margin-bottom: 24px; font-weight: 400;}
 
-        .info-card {
-            background: #ffffff; border: 1px solid var(--border-color); border-left: 5px solid var(--accent-main);
-            border-radius: 16px; padding: 28px; margin-bottom: 20px; transition: all 0.3s var(--ease-out-expo); box-shadow: var(--shadow-md);
+        /* 👑 [Premium Effect 4] การ์ดข้อมูลพร้อม Shimmer Effect */
+        .info-card, .project-card {
+            background: #ffffff; border: 1px solid var(--border-color); 
+            border-radius: 16px; padding: 28px; margin-bottom: 20px; transition: all 0.4s var(--ease-out-expo); box-shadow: var(--shadow-md);
+            position: relative; overflow: hidden; /* จำเป็นสำหรับซ่อนแสงที่วิ่งเกินขอบ */
         }
-        .info-card:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-lg); }
+        .info-card { border-left: 5px solid var(--accent-main); }
         
-        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
-        .tech-tag { background: #f1f5f9; border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
-        .tech-tag:hover { background: var(--accent-light); color: var(--accent-main); border-color: var(--accent-main); }
+        /* สร้างเส้นแสงสะท้อน */
+        .info-card::before, .project-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.6), rgba(255,255,255,0));
+            transform: skewX(-25deg); transition: 0.6s ease; pointer-events: none; z-index: 1;
+        }
         
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .project-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; background: #ffffff; transition: all 0.3s var(--ease-out-expo); box-shadow: var(--shadow-md);}
-        .project-card:hover { border-color: var(--accent-main); box-shadow: var(--shadow-lg); transform: translateY(-4px) scale(1.02);}
-        .project-title { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: var(--text-primary); }
-        .project-desc { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; }
+        .info-card:hover, .project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-main);}
+        /* ให้แสงวิ่งพาดผ่านเมื่อ Hover */
+        .info-card:hover::before, .project-card:hover::before { left: 150%; transition: 0.6s ease; }
+        
+        /* แท็กแบบ Interactive Glow */
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; position: relative; z-index: 2;}
+        .tech-tag { 
+            background: #f1f5f9; border: 1px solid var(--border-color); color: var(--text-primary); 
+            padding: 8px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; 
+            transition: all 0.3s var(--ease-spring); 
+        }
+        .tech-tag:hover { 
+            background: var(--accent-main); color: white; border-color: var(--accent-main); 
+            transform: translateY(-2px) scale(1.05); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3);
+        }
+        
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .project-title { font-weight: 800; font-size: 1.15rem; margin-bottom: 10px; color: var(--text-primary); position: relative; z-index: 2;}
+        .project-desc { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; position: relative; z-index: 2;}
 
     </style>
 </head>
@@ -217,42 +238,44 @@
     <div class="glow-orb-2"></div>
 
     <div class="app-window" id="mainAppWindow">
-        <aside class="sidebar">
-            <div class="profile-section">
-                <div class="avatar-placeholder">MP</div>
-                <div>
-                    <div class="profile-name">Monton Prompheng</div>
-                    <div class="profile-role">Computer Engineering</div>
-                </div>
+        
+        <div class="sidebar-profile">
+            <div class="avatar-placeholder">MP</div>
+            <div class="profile-name">Monton Prompheng</div>
+            <div class="profile-role">Computer Engineering</div>
+            
+            <div class="live-status">
+                <div class="status-dot"></div> Available for Work
             </div>
-
+            
             <div class="social-links">
                 <a href="mailto:dan.monthon@gmail.com" class="social-btn stroke-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></a>
                 <a href="tel:0825511045" class="social-btn stroke-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></a>
                 <a href="https://github.com/yujiminbluu" target="_blank" rel="noopener noreferrer" class="social-btn"><svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a>
             </div>
+        </div>
 
-            <nav class="nav-menu" id="navMenu">
-                <div class="nav-indicator" id="navIndicator"></div>
-                
-                <button class="nav-item active" data-target="profile">
-                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Overview
-                </button>
-                <button class="nav-item" data-target="projects">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Projects
-                </button>
-                <button class="nav-item" data-target="education">
-                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Education
-                </button>
-                <button class="nav-item" data-target="expertise">
-                    <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> Expertise
-                </button>
-            </nav>
-        </aside>
+        <nav class="nav-menu" id="navMenu">
+            <div class="nav-indicator" id="navIndicator"></div>
+            
+            <button class="nav-item active" data-target="profile">
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Overview
+            </button>
+            <button class="nav-item" data-target="projects">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Projects
+            </button>
+            <button class="nav-item" data-target="education">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Education
+            </button>
+            <button class="nav-item" data-target="expertise">
+                <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> Expertise
+            </button>
+        </nav>
 
         <main class="main-content" id="mainContent">
+            
             <section id="profile" class="tab-pane active">
-                <span class="section-tag">Introduction</span>
+                <div class="section-tag">Introduction</div>
                 <h2 class="section-heading">Professional Overview</h2>
                 <p class="summary-text">
                     A dedicated professional bridging the gap between systematic engineering and financial logic. Capable of understanding technical system workflows while applying structured, data-driven thinking to investment analysis and real-world problem-solving.
@@ -263,7 +286,7 @@
             </section>
 
             <section id="projects" class="tab-pane">
-                <span class="section-tag">Proof of Work</span>
+                <div class="section-tag">Proof of Work</div>
                 <h2 class="section-heading">Featured Projects</h2>
                 <div class="project-grid">
                     <div class="project-card">
@@ -282,17 +305,17 @@
             </section>
 
             <section id="education" class="tab-pane">
-                <span class="section-tag">Academic Background</span>
+                <div class="section-tag">Academic Background</div>
                 <h2 class="section-heading">Education</h2>
                 <div class="info-card">
-                    <div style="font-weight: 800; font-size: 1.2rem;">Bachelor of Engineering in Computer Engineering</div>
+                    <div style="font-weight: 800; font-size: 1.15rem;">Bachelor of Engineering in Computer Engineering</div>
                     <div style="font-size: 0.95rem; color: var(--accent-main); margin: 8px 0 16px 0; font-weight: 600;">Nakhon Phanom University</div>
                     <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.7;">
                         Focusing on system architecture, logical reasoning, and fundamental programming concepts. Applying analytical approaches to solve complex operational problems systematically.
                     </p>
                 </div>
                 <div class="info-card" style="border-left-color: #94a3b8;">
-                    <div style="font-weight: 800; font-size: 1.2rem;">Undergraduate Studies in Accounting (2 Years)</div>
+                    <div style="font-weight: 800; font-size: 1.15rem;">Undergraduate Studies in Accounting (2 Years)</div>
                     <div style="font-size: 0.95rem; color: #64748b; margin: 8px 0 16px 0; font-weight: 600;">Mahasarakham University</div>
                     <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.7;">
                         Built a solid foundation in accounting principles, structural financial data management, and systematic record-keeping.
@@ -301,7 +324,7 @@
             </section>
 
             <section id="expertise" class="tab-pane">
-                <span class="section-tag">Capabilities</span>
+                <div class="section-tag">Capabilities</div>
                 <h2 class="section-heading">Core Expertise</h2>
                 <div class="info-card" style="border-left: none; padding: 0; box-shadow: none; background: transparent;">
                     <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">Technical & Engineering</h3>
@@ -322,9 +345,9 @@
 
                     <h3 style="margin: 35px 0 12px 0; font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">Soft Skills</h3>
                     <div class="tech-tags">
-                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Shared Goal Responsibility</span>
-                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Constructive Communication</span>
-                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Adaptability</span>
+                        <span class="tech-tag">Shared Goal Responsibility</span>
+                        <span class="tech-tag">Constructive Communication</span>
+                        <span class="tech-tag">Adaptability</span>
                     </div>
                 </div>
             </section>
@@ -338,64 +361,47 @@
             const indicator = document.getElementById('navIndicator');
             const navMenu = document.getElementById('navMenu');
 
-            // ฟังก์ชันอัปเดตตำแหน่งและขนาดของก้อนสีฟ้า (Indicator) ให้วิ่งไปหาปุ่มที่ถูกคลิก
             function updateIndicator(activeBtn) {
-                // ดึงตำแหน่งของปุ่มเทียบกับกรอบของ navMenu
-                const btnRect = activeBtn.getBoundingClientRect();
-                const menuRect = navMenu.getBoundingClientRect();
-                
-                // สำหรับมือถือ (เลื่อนแนวนอน)
-                if (window.innerWidth <= 900) {
-                    indicator.style.width = `${activeBtn.offsetWidth}px`;
-                    indicator.style.height = `${activeBtn.offsetHeight}px`;
-                    // คำนวณตำแหน่งจากซ้าย โดยบวกระยะที่เมนูถูก Scroll ไปแล้วด้วย
-                    indicator.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
-                } 
-                // สำหรับ PC (เลื่อนแนวตั้ง)
-                else {
-                    indicator.style.width = `${activeBtn.offsetWidth}px`;
-                    indicator.style.height = `${activeBtn.offsetHeight}px`;
-                    // วิ่งขึ้นลงตามแกน Y
-                    indicator.style.transform = `translateY(${activeBtn.offsetTop}px)`;
-                }
+                if(!activeBtn) return;
+                indicator.style.width = `${activeBtn.offsetWidth}px`;
+                indicator.style.height = `${activeBtn.offsetHeight}px`;
+                indicator.style.transform = `translate(${activeBtn.offsetLeft}px, ${activeBtn.offsetTop}px)`;
             }
 
-            // สั่งให้ Indicator วิ่งไปหาปุ่มแรกตอนโหลดเว็บเสร็จ
-            const firstBtn = document.querySelector('.nav-item.active');
-            if (firstBtn) updateIndicator(firstBtn);
+            setTimeout(() => {
+                const firstBtn = document.querySelector('.nav-item.active');
+                if (firstBtn) updateIndicator(firstBtn);
+            }, 100);
 
-            // คำนวณใหม่ทุกครั้งที่หมุนหน้าจอ หรือย่อขยายหน้าต่าง
             window.addEventListener('resize', () => {
                 const activeBtn = document.querySelector('.nav-item.active');
                 if (activeBtn) updateIndicator(activeBtn);
             });
 
-            // ระบบคลิกเปลี่ยนหน้า
             navButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    // 1. จัดการคลาส active ของปุ่ม
                     navButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-
-                    // 2. สั่งให้ก้อนสีฟ้าวิ่งไปหาปุ่มที่คลิก
                     updateIndicator(btn);
 
-                    // 3. จัดการเปลี่ยนหน้าเนื้อหา
-                    tabPanes.forEach(p => p.classList.remove('active'));
+                    // เปลี่ยนเนื้อหา
+                    tabPanes.forEach(p => {
+                        p.classList.remove('active');
+                        // เล็กๆ น้อยๆ : ลบแอนิเมชันเพื่อรีเซ็ตให้มันเล่นใหม่รอบหน้า
+                        p.style.animation = 'none';
+                        p.offsetHeight; /* trigger reflow */
+                        p.style.animation = null; 
+                    });
+                    
                     const targetId = btn.getAttribute('data-target');
                     document.getElementById(targetId).classList.add('active');
 
-                    // 4. เลื่อนหน้าจอบนมือถือให้เนียนๆ
+                    // เลื่อนหน้าจอ
                     if (window.innerWidth <= 900) {
-                        // เลื่อนเนื้อหาให้พ้นระยะ Profile ลงมา
-                        window.scrollTo({
-                            top: navMenu.offsetTop - 10,
-                            behavior: 'smooth'
-                        });
-                        // สไลด์เมนูให้ปุ่มที่กดอยู่ตรงกลางจออัตโนมัติ
+                        const appWindow = document.getElementById('mainAppWindow');
+                        appWindow.scrollTo({ top: navMenu.offsetTop - 5, behavior: 'smooth' });
                         btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     } else {
-                        // บน PC เวลาเปลี่ยนหน้า ให้เนื้อหาเด้งกลับไปบรรทัดบนสุด
                         document.getElementById('mainContent').scrollTop = 0;
                     }
                 });
