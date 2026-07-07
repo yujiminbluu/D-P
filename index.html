@@ -13,8 +13,7 @@
 
     <style>
         :root {
-            --bg-body: #f1f5f9;
-            --bg-surface: rgba(255, 255, 255, 0.85); /* ปรับให้โปร่งแสงเล็กน้อยเพื่อให้เห็นวิดีโอด้านหลัง */
+            --bg-surface: rgba(255, 255, 255, 0.75);
             --text-primary: #0f172a;
             --text-secondary: #64748b;
             --accent-main: #2563eb;
@@ -36,36 +35,46 @@
             align-items: center;
             padding: 20px;
             position: relative;
-            overflow: hidden; /* ป้องกันการเลื่อนทะลุกรอบ */
+            overflow: hidden;
         }
 
         /* -------------------------------------------
-           ส่วนการจัดการภาพและวิดีโอพื้นหลัง 
+           [NEW] พื้นหลัง Animation (CSS ล้วน ไม่ต้องใช้ไฟล์)
            ------------------------------------------- */
-        .video-bg-container {
+        
+        /* 1. สีพื้นหลังแบบไล่เฉดที่เคลื่อนไหว (Fluid Gradient) */
+        .animated-gradient-bg {
             position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(-45deg, #f8fafc, #e0e7ff, #f1f5f9, #dbeafe);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            z-index: -3;
+        }
+
+        /* 2. ตารางเส้นสายดิจิทัล (Digital Grid) ที่เลื่อนไหลแบบอินฟินิตี้ */
+        .digital-grid-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(37, 99, 235, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(37, 99, 235, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; /* ขนาดของช่องตาราง */
+            animation: gridPan 20s linear infinite;
             z-index: -2;
-            overflow: hidden;
-            background-color: var(--bg-body);
         }
 
-        .bg-media {
-            width: 100%; height: 100%;
-            object-fit: cover; /* ทำให้ภาพ/วิดีโอเต็มจอโดยไม่เสียสัดส่วน */
-            position: absolute;
-            top: 0; left: 0;
+        /* Keyframes สำหรับให้สีพื้นหลังไหลเวียน */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        /* แผ่นฟิลเตอร์ทับวิดีโอ เพื่อให้ตัวหนังสือบนเว็บยังอ่านง่าย ไม่ลายตา */
-        .bg-overlay {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(241, 245, 249, 0.7); 
-            backdrop-filter: blur(8px); /* เบลอพื้นหลังนิดๆ ให้ดูหรู */
-            z-index: -1;
+        /* Keyframes สำหรับให้ตารางเลื่อนขยับไปเรื่อยๆ */
+        @keyframes gridPan {
+            0% { background-position: 0px 0px; }
+            100% { background-position: 40px 40px; }
         }
 
         /* -------------------------------------------
@@ -73,8 +82,8 @@
            ------------------------------------------- */
         .app-window {
             background-color: var(--bg-surface);
-            backdrop-filter: blur(12px); /* Glassmorphism effect */
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             width: 100%; max-width: 1100px; height: 85vh; min-height: 650px;
             border-radius: 20px; box-shadow: var(--shadow-lg);
             border: 1px solid rgba(255, 255, 255, 0.9);
@@ -82,7 +91,7 @@
         }
 
         .sidebar {
-            width: 320px; background-color: rgba(248, 250, 252, 0.7); display: flex; flex-direction: column;
+            width: 320px; background-color: rgba(248, 250, 252, 0.6); display: flex; flex-direction: column;
             border-right: 1px solid var(--border-color); padding: 40px 24px; position: relative;
             border-top-left-radius: 20px; border-bottom-left-radius: 20px;
         }
@@ -116,7 +125,7 @@
             display: flex; align-items: center; gap: 12px; background: transparent; border: none;
         }
         .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; opacity: 0.7; }
-        .nav-item:hover { background-color: rgba(255,255,255,0.6); color: var(--text-primary); }
+        .nav-item:hover { background-color: rgba(255,255,255,0.8); color: var(--text-primary); }
         .nav-item.active { background-color: var(--accent-main); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
         .nav-item.active svg { opacity: 1; }
 
@@ -152,9 +161,7 @@
         }
         .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); background: rgba(255,255,255,0.9); }
         
-        /* -------------------------------------------
-           เอฟเฟกต์ Glitch / บัค เวลาคลิกหน้าจอ
-           ------------------------------------------- */
+        /* เอฟเฟกต์ Glitch / บัค */
         .glitch-anim {
             animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         }
@@ -172,20 +179,9 @@
 </head>
 <body>
 
-    <!-- 1. ส่วนตั้งค่าพื้นหลังวิดีโอและรูปภาพ -->
-    <div class="video-bg-container">
-        <!-- เปลี่ยน src ด้านล่างเป็นไฟล์รูปภาพของคุณ (แสดงผลกรณีที่วิดีโอไม่เล่น) -->
-        <img src="ใส่ชื่อไฟล์ภาพของคุณ.jpg" alt="Background Fallback" class="bg-media">
-        
-        <!-- เปลี่ยน src ด้านล่างเป็นไฟล์วิดีโอ MP4 ของคุณ -->
-        <video autoplay loop muted playsinline class="bg-media">
-            <source src="ใส่ชื่อไฟล์วิดีโอของคุณ.mp4" type="video/mp4">
-        </video>
-        
-        <div class="bg-overlay"></div>
-    </div>
+    <div class="animated-gradient-bg"></div>
+    <div class="digital-grid-overlay"></div>
 
-    <!-- 2. กรอบแอปพลิเคชันหลัก -->
     <div class="app-window" id="mainAppWindow">
         <aside class="sidebar">
             <div class="profile-section">
@@ -196,17 +192,13 @@
                 </div>
             </div>
 
-            <!-- 3. ข้อมูลติดต่อที่ฝังลิงก์จริงของคุณแล้ว -->
             <div class="social-links">
-                <!-- อีเมล -->
                 <a href="mailto:dan.monthon@gmail.com" class="social-btn stroke-icon" title="Email: dan.monthon@gmail.com">
                     <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                 </a>
-                <!-- เบอร์โทรศัพท์ -->
                 <a href="tel:0825511045" class="social-btn stroke-icon" title="Phone: 0825511045">
                     <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 </a>
-                <!-- GitHub -->
                 <a href="https://github.com/yujiminbluu" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub: yujiminbluu">
                     <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                 </a>
@@ -249,11 +241,8 @@
         </main>
     </div>
 
-    <!-- 4. JavaScript ระบบเมนูและระบบ Glitch Effect -->
     <script>
-        // ฟังก์ชันเปลี่ยนหน้า Tab
         function openTab(event, tabId) {
-            // หยุดการกระทำถ้าไปกดโดนปุ่มแล้วเกิดเอฟเฟกต์ซ้อน
             event.stopPropagation();
             
             const panes = document.querySelectorAll('.tab-pane');
@@ -265,323 +254,21 @@
             event.currentTarget.classList.add('active');
         }
 
-        // ฟังก์ชันตรวจจับการคลิก/แตะเพื่อสร้าง Glitch Effect
+        // เอฟเฟกต์ Glitch ทำงานเมื่อคลิกจอ (แต่ไม่ทำงานถ้าคลิกปุ่ม)
         document.addEventListener('pointerdown', (e) => {
             const appWindow = document.getElementById('mainAppWindow');
-            
-            // เช็กว่าไม่ได้กดโดนปุ่มหรือลิงก์ (ถ้าใช่ ไม่ต้องกระตุก)
             const target = e.target;
+            
             if(target.closest('button') || target.closest('a')) return;
 
-            // รีเซ็ตแอนิเมชันให้สามารถกดซ้ำได้เรื่อยๆ
             appWindow.classList.remove('glitch-anim');
-            void appWindow.offsetWidth; // บังคับให้เบราว์เซอร์ล้างค่าเดิม
+            void appWindow.offsetWidth; 
             appWindow.classList.add('glitch-anim');
             
-            // ลบคลาสออกเมื่อแอนิเมชันเล่นจบ (0.3 วินาที)
             setTimeout(() => {
                 appWindow.classList.remove('glitch-anim');
             }, 300);
         });
-    </script>
-</body>
-</html>
-            background-size: 24px 24px;
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            position: relative;
-        }
-
-        body::before {
-            content: ''; position: absolute; width: 40vw; height: 40vw;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, transparent 70%);
-            top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
-        }
-
-        .app-window {
-            background-color: var(--bg-surface);
-            width: 100%; max-width: 1100px; height: 85vh; min-height: 650px;
-            border-radius: 20px; box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            display: flex; flex-direction: row; overflow: hidden; position: relative; z-index: 1;
-        }
-
-        .sidebar {
-            width: 320px; background-color: #f8fafc; display: flex; flex-direction: column;
-            border-right: 1px solid var(--border-color); padding: 40px 24px; position: relative;
-        }
-
-        .sidebar-header-bg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100px;
-            background: var(--accent-gradient); opacity: 0.1; z-index: 0;
-        }
-
-        .profile-section {
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            margin-bottom: 25px; position: relative; z-index: 1;
-        }
-
-        .avatar-placeholder {
-            width: 96px; height: 96px; background: var(--accent-gradient); color: white;
-            border-radius: 20px; display: flex; justify-content: center; align-items: center;
-            font-size: 2.5rem; font-weight: 800; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
-            border: 3px solid white; margin-bottom: 15px; flex-shrink: 0;
-        }
-
-        .profile-name { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
-        .profile-role { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; font-weight: 500; }
-
-        /* [PROFESSIONAL UPGRADE 2] Social Links & Contact */
-        .social-links {
-            display: flex; gap: 10px; justify-content: center; margin-top: 15px; margin-bottom: 25px;
-            position: relative; z-index: 1;
-        }
-        
-        .social-btn {
-            width: 36px; height: 36px; border-radius: 50%; background: white; border: 1px solid var(--border-color);
-            display: flex; justify-content: center; align-items: center; color: var(--text-secondary);
-            transition: all 0.2s ease; cursor: pointer; text-decoration: none;
-        }
-        
-        .social-btn:hover { background: var(--accent-light); color: var(--accent-main); border-color: var(--accent-main); transform: translateY(-2px); }
-        .social-btn svg { width: 18px; height: 18px; fill: currentColor; }
-
-        /* [PROFESSIONAL UPGRADE 3] Call to Action Button */
-        .btn-download {
-            display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-            background: var(--accent-gradient); color: white; border: none; padding: 12px;
-            border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
-            transition: all 0.3s ease; margin-bottom: 20px; text-decoration: none;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); position: relative; z-index: 1;
-        }
-        .btn-download:hover { box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3); transform: translateY(-2px); }
-        .btn-download svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
-
-        .nav-menu { display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1; flex: 1;}
-        .nav-item {
-            padding: 12px 16px; text-align: left; border-radius: 10px; cursor: pointer;
-            font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); transition: all 0.2s ease;
-            display: flex; align-items: center; gap: 12px; background: transparent; border: none;
-        }
-        .nav-item svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; fill: none; opacity: 0.7; }
-        .nav-item:hover { background-color: #f1f5f9; color: var(--text-primary); }
-        .nav-item.active { background-color: var(--accent-main); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-        .nav-item.active svg { opacity: 1; }
-
-        .main-content { flex: 1; padding: 50px 60px; overflow-y: auto; background-color: var(--bg-surface); }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        /* Mobile Layout */
-        @media (max-width: 768px) {
-            body { padding: 0; }
-            .app-window { height: 100dvh; border-radius: 0; border: none; flex-direction: column; }
-            .sidebar { width: 100%; padding: 20px; border-right: none; border-bottom: 1px solid var(--border-color); box-shadow: var(--shadow-sm); z-index: 10;}
-            .profile-section { flex-direction: row; text-align: left; margin-bottom: 15px; gap: 15px; }
-            .avatar-placeholder { width: 56px; height: 56px; font-size: 1.5rem; border-radius: 14px; margin-bottom: 0; border-width: 2px;}
-            .social-links { display: none; } /* ซ่อน social ไอคอนบนมือถือเพื่อประหยัดพื้นที่ */
-            .btn-download { display: none; } /* ซ่อนปุ่มโหลด CV บนมือถือ ให้ไปอยู่ในส่วน Contact แทนได้ */
-            .nav-menu { flex-direction: row; overflow-x: auto; padding-bottom: 5px; gap: 8px; flex: none;}
-            .nav-item { padding: 10px 14px; white-space: nowrap; font-size: 0.9rem;}
-            .main-content { padding: 25px 20px; }
-        }
-
-        .tab-pane { display: none; animation: slideFade 0.3s ease forwards; }
-        .tab-pane.active { display: block; }
-        @keyframes slideFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent-main); font-weight: 700; margin-bottom: 8px; display: block; }
-        h2.section-heading { font-size: 2rem; font-weight: 800; margin-bottom: 25px; color: var(--text-primary); letter-spacing: -0.5px; }
-        p.summary-text { line-height: 1.8; color: #475569; font-size: 1.05rem; margin-bottom: 20px; }
-
-        .info-card {
-            background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--accent-main);
-            border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; box-shadow: var(--shadow-sm);
-        }
-        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: #cbd5e1; }
-        .card-title { font-weight: 700; font-size: 1.15rem; color: var(--text-primary); }
-        .card-subtitle { font-size: 0.9rem; color: var(--accent-main); margin: 6px 0 12px 0; font-weight: 600; }
-        
-        /* [PROFESSIONAL UPGRADE 4] Project Grid & Tags */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 15px; }
-        .project-card {
-            border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;
-            background: #f8fafc; transition: all 0.2s ease;
-        }
-        .project-card:hover { background: white; border-color: var(--accent-main); box-shadow: var(--shadow-md); transform: translateY(-3px);}
-        .project-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; color: var(--text-primary); }
-        .project-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 15px; }
-        .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tech-tag {
-            background: var(--border-color); color: var(--text-primary); padding: 4px 8px;
-            border-radius: 6px; font-size: 0.75rem; font-weight: 600;
-        }
-
-        .skill-group { margin-bottom: 18px; }
-        .skill-header { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
-        .progress-bg { width: 100%; height: 8px; background-color: #e2e8f0; border-radius: 10px; overflow: hidden; }
-        .progress-bar { height: 100%; background: var(--accent-gradient); border-radius: 10px; position: relative; }
-    </style>
-</head>
-<body>
-
-    <div class="app-window">
-        <aside class="sidebar">
-            <div class="sidebar-header-bg"></div>
-            <div class="profile-section">
-                <div class="avatar-placeholder">MP</div>
-                <div>
-                    <div class="profile-name">Monton Prompheng</div>
-                    <div class="profile-role">Computer Engineering</div>
-                </div>
-            </div>
-
-            <div class="social-links">
-                <a href="#" class="social-btn" title="Email">
-                    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                </a>
-                <a href="#" class="social-btn" title="GitHub">
-                    <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                </a>
-                <a href="#" class="social-btn" title="LinkedIn">
-                    <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                </a>
-            </div>
-
-            <a href="#" class="btn-download">
-                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Download Resume
-            </a>
-
-            <div class="nav-menu">
-                <button class="nav-item active" onclick="openTab(event, 'profile')">
-                    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Overview
-                </button>
-                <button class="nav-item" onclick="openTab(event, 'projects')">
-                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Projects
-                </button>
-                <button class="nav-item" onclick="openTab(event, 'education')">
-                    <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Education
-                </button>
-                <button class="nav-item" onclick="openTab(event, 'skills')">
-                    <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg> Expertise
-                </button>
-            </div>
-        </aside>
-
-        <main class="main-content">
-            
-            <section id="profile" class="tab-pane active">
-                <span class="section-tag">Introduction</span>
-                <h2 class="section-heading">Profile Overview</h2>
-                <p class="summary-text">
-                    A dedicated professional bridging the gap between systematic engineering and financial logic. Capable of understanding technical system workflows while applying structured, data-driven thinking to investment analysis and real-world problem-solving.
-                </p>
-                <p class="summary-text">
-                    Highly adaptable and focused on working effectively within a team environment, driven by shared goals, logical execution, and constructive communication.
-                </p>
-            </section>
-
-            <section id="projects" class="tab-pane">
-                <span class="section-tag">Proof of Work</span>
-                <h2 class="section-heading">Featured Projects</h2>
-                
-                <div class="project-grid">
-                    <div class="project-card">
-                        <div class="project-title">OS Scheduler Optimization</div>
-                        <p class="project-desc">Implemented process scheduling algorithms (FIFO, STCF) within the xv6 operating system environment to optimize CPU execution time.</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">C Programming</span>
-                            <span class="tech-tag">OS Architecture</span>
-                            <span class="tech-tag">xv6</span>
-                        </div>
-                    </div>
-                    
-                    <div class="project-card">
-                        <div class="project-title">Market Analysis Framework</div>
-                        <p class="project-desc">Developed a structured analytical approach for Gold Spot trading, combining leverage management, margin calculation, and historical data patterns.</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">Data Analysis</span>
-                            <span class="tech-tag">Financial Logic</span>
-                            <span class="tech-tag">TradingView</span>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-title">Digital Identity Design</div>
-                        <p class="project-desc">Crafted digital-focused, circuit-inspired graphic identities and UI elements, applying modern minimalist aesthetics to professional branding.</p>
-                        <div class="tech-tags">
-                            <span class="tech-tag">UI/UX</span>
-                            <span class="tech-tag">Graphic Design</span>
-                            <span class="tech-tag">Logic Systems</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="education" class="tab-pane">
-                <span class="section-tag">Academic Background</span>
-                <h2 class="section-heading">Education</h2>
-                
-                <div class="info-card">
-                    <div class="card-title">Bachelor of Engineering in Computer Engineering</div>
-                    <div class="card-subtitle">Nakhon Phanom University</div>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
-                        Focusing on system architecture, logical reasoning, and fundamental programming concepts. Applying analytical approaches to solve complex operational problems systematically.
-                    </p>
-                </div>
-
-                <div class="info-card" style="border-left-color: #94a3b8;">
-                    <div class="card-title">Undergraduate Studies in Accounting (2 Years)</div>
-                    <div class="card-subtitle" style="color: #64748b;">Mahasarakham University</div>
-                    <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
-                        Built a solid foundation in accounting principles, structural financial data management, and systematic record-keeping.
-                    </p>
-                </div>
-            </section>
-
-            <section id="skills" class="tab-pane">
-                <span class="section-tag">Core Competencies</span>
-                <h2 class="section-heading">Expertise & Skills</h2>
-                
-                <div class="info-card" style="border-left-color: transparent; padding-top: 0; box-shadow: none; border: none;">
-                    <h3 style="margin-bottom: 20px; font-size: 1.1rem; color: var(--text-primary);">Technical & Systems</h3>
-                    <div class="skill-group"><div class="skill-header"><span>Systematic Workflow Design</span></div><div class="progress-bg"><div class="progress-bar" style="width: 85%;"></div></div></div>
-                    <div class="skill-group"><div class="skill-header"><span>C Programming & OS Concepts</span></div><div class="progress-bg"><div class="progress-bar" style="width: 75%;"></div></div></div>
-                    
-                    <h3 style="margin: 30px 0 20px 0; font-size: 1.1rem; color: var(--text-primary);">Finance & Analytics</h3>
-                    <div class="skill-group"><div class="skill-header"><span>Accounting & Bookkeeping</span></div><div class="progress-bg"><div class="progress-bar" style="width: 80%;"></div></div></div>
-                    <div class="skill-group"><div class="skill-header"><span>Investment Analytics (Gold Spot)</span></div><div class="progress-bg"><div class="progress-bar" style="width: 75%;"></div></div></div>
-
-                    <h3 style="margin: 30px 0 20px 0; font-size: 1.1rem; color: var(--text-primary);">Soft Skills & Collaboration</h3>
-                    <div class="tech-tags" style="gap: 10px;">
-                        <span class="tech-tag" style="background: var(--accent-light); color: var(--accent-main); padding: 8px 12px; font-size: 0.85rem;">Shared Goal Responsibility</span>
-                        <span class="tech-tag" style="background: var(--accent-light); color: var(--accent-main); padding: 8px 12px; font-size: 0.85rem;">Constructive Communication</span>
-                        <span class="tech-tag" style="background: var(--accent-light); color: var(--accent-main); padding: 8px 12px; font-size: 0.85rem;">Adaptability</span>
-                        <span class="tech-tag" style="background: var(--accent-light); color: var(--accent-main); padding: 8px 12px; font-size: 0.85rem;">Basic English</span>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <script>
-        function openTab(event, tabId) {
-            const panes = document.querySelectorAll('.tab-pane');
-            panes.forEach(pane => pane.classList.remove('active'));
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => item.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-        }
     </script>
 </body>
 </html>
