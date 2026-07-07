@@ -34,7 +34,9 @@
             position: relative; overflow: hidden; 
         }
 
-        /* พื้นหลังมิติใหม่ */
+        /* -------------------------------------------
+           พื้นหลังมิติใหม่
+           ------------------------------------------- */
         .digital-grid-overlay {
             position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
@@ -51,7 +53,9 @@
         @keyframes gridPan { 0% { transform: translateY(0); } 100% { transform: translateY(30px); } }
         @keyframes floatOrb { 0% { transform: scale(1) translate(0, 0); } 100% { transform: scale(1.1) translate(5%, 5%); } }
 
-        /* โครงสร้างสัดส่วน PC (CSS Grid) */
+        /* -------------------------------------------
+           โครงสร้างสัดส่วน PC (CSS Grid)
+           ------------------------------------------- */
         .app-window {
             background-color: var(--bg-surface); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             width: 94vw; max-width: 1400px; height: 90vh; max-height: 900px;
@@ -65,25 +69,18 @@
             padding: 50px 30px 10px 30px; display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 10;
         }
 
-        /* 👑 [Premium Effect 1] แอนิเมชันรูปโปรไฟล์ */
         .avatar-placeholder {
             width: 105px; height: 105px; background: var(--accent-gradient); color: white;
             border-radius: 28px; display: flex; justify-content: center; align-items: center;
             font-size: 2.5rem; font-weight: 800; box-shadow: 0 12px 25px -5px rgba(37, 99, 235, 0.4);
             border: 4px solid white; margin-bottom: 18px; flex-shrink: 0;
             transition: all 0.5s var(--ease-spring); cursor: default;
-            position: relative;
         }
-        .avatar-placeholder:hover {
-            transform: scale(1.05) translateY(-5px);
-            box-shadow: 0 20px 35px -5px rgba(37, 99, 235, 0.5);
-            border-radius: 20px; /* เปลี่ยนความโค้งนิดนึงให้น่าสนใจ */
-        }
+        .avatar-placeholder:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 20px 35px -5px rgba(37, 99, 235, 0.5); border-radius: 20px; }
 
         .profile-name { font-size: 1.45rem; font-weight: 800; letter-spacing: -0.5px; color: var(--text-primary); }
         .profile-role { font-size: 0.95rem; color: var(--text-secondary); margin-top: 6px; font-weight: 500; margin-bottom: 15px;}
         
-        /* 👑 [Premium Effect 2] จุดสถานะสีเขียวกระพริบ (Live Status) */
         .live-status {
             display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #10b981;
             background: rgba(16, 185, 129, 0.1); padding: 6px 14px; border-radius: 20px; margin-bottom: 25px;
@@ -137,27 +134,37 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid transparent; background-clip: padding-box;}
 
-        /* โครงสร้าง Mobile */
+        /* -------------------------------------------
+           โครงสร้าง Mobile แบบ Bulletproof ไร้บัค 100%
+           ------------------------------------------- */
         @media (max-width: 900px) {
-            body { padding: 0; overflow-y: hidden; }
+            /* 1. ปลดล็อก Body ให้เลื่อนได้อย่างอิสระ */
+            body { padding: 0; overflow-y: auto; align-items: flex-start; }
+            
+            /* 2. ปลดล็อก App Window ไม่ให้ล็อกความสูง 100vh ป้องกันการบีบ (Squish) */
             .app-window { 
-                display: flex; flex-direction: column; width: 100vw; height: 100vh; height: 100dvh; 
+                display: flex; flex-direction: column; width: 100vw; height: auto; min-height: 100vh; 
                 max-width: none; max-height: none; border-radius: 0; border: none; background-color: var(--bg-body); box-shadow: none; backdrop-filter: none;
-                overflow-y: auto; overflow-x: hidden;
+                overflow: visible; /* ห้ามใส่ overflow-y hidden เด็ดขาด */
             }
-            .sidebar-profile { padding: 40px 20px 10px 20px; background-color: transparent; border-right: none; }
+            
+            .sidebar-profile { padding: 40px 20px 10px 20px; background-color: transparent; border-right: none; flex-shrink: 0;}
             .avatar-placeholder { width: 80px; height: 80px; font-size: 2rem; margin-bottom: 12px; border-radius: 20px;}
             .live-status { margin-bottom: 15px; }
             
+            /* 3. ล็อกเมนูไม่ให้โดนบีบ และให้ลอย (Sticky) อย่างสมบูรณ์แบบ */
             .nav-menu { 
-                flex-direction: row; overflow-x: auto; padding: 10px 15px; gap: 4px; position: sticky; top: 0; z-index: 100;
+                flex-direction: row; align-items: center; overflow-x: auto; overflow-y: hidden;
+                padding: 12px 15px; gap: 8px; position: sticky; top: 0; z-index: 100;
                 background-color: rgba(248, 250, 252, 0.95); backdrop-filter: blur(12px); border-right: none; border-bottom: 1px solid var(--border-color);
+                flex-shrink: 0; /* หัวใจสำคัญ: ห้ามบีบความสูงเมนูนี้ */
             }
             .nav-menu::-webkit-scrollbar { display: none; } 
-            .nav-item { padding: 10px 16px; justify-content: center; white-space: nowrap; font-size: 0.95rem; border-radius: 12px; width: auto; gap: 8px; }
+            .nav-item { padding: 10px 16px; justify-content: center; white-space: nowrap; font-size: 0.95rem; border-radius: 12px; width: auto; gap: 8px; flex-shrink: 0; }
             
             .main-content { 
                 padding: 30px 15px 60px 15px; background-color: var(--bg-surface); min-height: 75vh; border-top-left-radius: 24px; border-top-right-radius: 24px; box-shadow: var(--shadow-md);
+                flex-shrink: 0;
             }
             .info-card, .project-card { padding: 20px; } 
             h2.section-heading { font-size: 1.8rem; margin-bottom: 20px; }
@@ -170,23 +177,15 @@
         .tab-pane { display: none; }
         .tab-pane.active { display: block; }
         
-        /* 👑 [Premium Effect 3] Staggered Reveal (ไล่ลำดับการปรากฏ) */
-        .tab-pane.active > * {
-            animation: slideUpFade 0.6s var(--ease-out-expo) forwards;
-            opacity: 0; transform: translateY(20px);
-        }
-        /* กำหนดเวลาดีเลย์ให้โผล่มาทีละบรรทัด */
+        .tab-pane.active > * { animation: slideUpFade 0.6s var(--ease-out-expo) forwards; opacity: 0; transform: translateY(20px); }
         .tab-pane.active > *:nth-child(1) { animation-delay: 0.05s; }
         .tab-pane.active > *:nth-child(2) { animation-delay: 0.1s; }
         .tab-pane.active > *:nth-child(3) { animation-delay: 0.15s; }
         .tab-pane.active > *:nth-child(4) { animation-delay: 0.2s; }
         .tab-pane.active > *:nth-child(5) { animation-delay: 0.25s; }
 
-        @keyframes slideUpFade { 
-            to { opacity: 1; transform: translateY(0); } 
-        }
+        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
 
-        /* ลูกเล่นตัวอักษรนำหน้าหัวข้อ */
         .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-main); font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
         .section-tag::before { content: '✦'; color: var(--accent-main); font-size: 1rem; animation: spinStar 4s linear infinite; }
         @keyframes spinStar { 100% { transform: rotate(360deg); } }
@@ -194,15 +193,13 @@
         h2.section-heading { font-size: 2.2rem; font-weight: 800; margin-bottom: 30px; color: var(--text-primary); letter-spacing: -1px; line-height: 1.2;}
         p.summary-text { line-height: 1.8; color: #475569; font-size: 1.1rem; margin-bottom: 24px; font-weight: 400;}
 
-        /* 👑 [Premium Effect 4] การ์ดข้อมูลพร้อม Shimmer Effect */
         .info-card, .project-card {
             background: #ffffff; border: 1px solid var(--border-color); 
             border-radius: 16px; padding: 28px; margin-bottom: 20px; transition: all 0.4s var(--ease-out-expo); box-shadow: var(--shadow-md);
-            position: relative; overflow: hidden; /* จำเป็นสำหรับซ่อนแสงที่วิ่งเกินขอบ */
+            position: relative; overflow: hidden; 
         }
         .info-card { border-left: 5px solid var(--accent-main); }
         
-        /* สร้างเส้นแสงสะท้อน */
         .info-card::before, .project-card::before {
             content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
             background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.6), rgba(255,255,255,0));
@@ -210,10 +207,8 @@
         }
         
         .info-card:hover, .project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-main);}
-        /* ให้แสงวิ่งพาดผ่านเมื่อ Hover */
         .info-card:hover::before, .project-card:hover::before { left: 150%; transition: 0.6s ease; }
         
-        /* แท็กแบบ Interactive Glow */
         .tech-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; position: relative; z-index: 2;}
         .tech-tag { 
             background: #f1f5f9; border: 1px solid var(--border-color); color: var(--text-primary); 
@@ -345,9 +340,9 @@
 
                     <h3 style="margin: 35px 0 12px 0; font-size: 1.1rem; color: var(--text-primary); font-weight: 700;">Soft Skills</h3>
                     <div class="tech-tags">
-                        <span class="tech-tag">Shared Goal Responsibility</span>
-                        <span class="tech-tag">Constructive Communication</span>
-                        <span class="tech-tag">Adaptability</span>
+                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Shared Goal Responsibility</span>
+                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Constructive Communication</span>
+                        <span class="tech-tag" style="border-color: rgba(37, 99, 235, 0.2); background: #eff6ff; color: var(--accent-main);">Adaptability</span>
                     </div>
                 </div>
             </section>
@@ -384,22 +379,20 @@
                     btn.classList.add('active');
                     updateIndicator(btn);
 
-                    // เปลี่ยนเนื้อหา
                     tabPanes.forEach(p => {
                         p.classList.remove('active');
-                        // เล็กๆ น้อยๆ : ลบแอนิเมชันเพื่อรีเซ็ตให้มันเล่นใหม่รอบหน้า
                         p.style.animation = 'none';
-                        p.offsetHeight; /* trigger reflow */
+                        p.offsetHeight; 
                         p.style.animation = null; 
                     });
                     
                     const targetId = btn.getAttribute('data-target');
                     document.getElementById(targetId).classList.add('active');
 
-                    // เลื่อนหน้าจอ
+                    // อัปเดตสคริปต์ให้สอดคล้องกับ Native Body Scroll บนมือถือ
                     if (window.innerWidth <= 900) {
-                        const appWindow = document.getElementById('mainAppWindow');
-                        appWindow.scrollTo({ top: navMenu.offsetTop - 5, behavior: 'smooth' });
+                        // ใช้ window.scrollTo เพื่อเลื่อนหน้าจอหลักแทน
+                        window.scrollTo({ top: navMenu.offsetTop - 5, behavior: 'smooth' });
                         btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     } else {
                         document.getElementById('mainContent').scrollTop = 0;
